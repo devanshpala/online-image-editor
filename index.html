@@ -1,0 +1,55 @@
+<html>
+    <head>
+            <title>Home</title>
+            <script src="jsFiles/vue.js"></script>
+            <link rel="stylesheet" type="text/css" href="cssFiles/style.css">
+    </head>
+    <body >
+        <div id="app" class="wrapper" >
+            <div class="navbarss" v-if="file">
+                <div class="nav-style" >
+
+                    <ul >
+                            <li v-for="(edit,index) of edits">
+                                <a href="#" @click.prevent="changeEditState(edit)">
+                                  {{ edit }}
+                                </a>
+                            </li>
+                    </ul>
+
+                </div>
+                <transition name="slideup">
+                <div class="nav-sub-style" v-if="editState == 'Filters'">
+                        <ul >
+                            <li v-for="(edit,index) of filter">
+                                <a href="#" @click.prevent="changeFilterState(edit)">
+                                  {{ edit }}
+                                </a>
+                            </li>
+                        </ul>
+                    <label v-if="editState" style="font-family:sans; background:">{{ filterState }}</label>
+                    <div v-if="filterState" class="filter-range">
+                        <input type="range" min="0" max="100"
+                        v-model="scale" @change="filterChange" class="slider">{{ scale }}%
+                    </div>
+                </div>
+            </transition>
+            </div>
+             <div class="uploadfile" >
+                <div v-if="!onloadState" class="upload-state" >
+                    <div class="upload-btn-wrapper">
+                      <button class="btn">Upload a file</button>
+                      <input type="file" accept="image/*"  name="file" @change="onChange" />
+                    </div>
+                </div>
+                <!-- <input type="file" > -->
+
+                <div class="canvas" class="main-class" v-if="onloadState">
+                    <img :src="file" id="imge"  alt="">
+                </div>
+
+            </div>
+        </div>
+        <script src="jsFiles/main.js"></script>
+    </body>
+</html>
