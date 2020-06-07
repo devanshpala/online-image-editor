@@ -1,0 +1,163 @@
+<style>
+
+/* .main-style {
+    display: grid;
+    grid-auto-rows: 25% 75%
+} */
+
+.nav-style{
+    display: flex;
+    justify-content: center;
+    background-color: black;
+    align-items: center;
+}
+
+.nav-sub-style{
+    font-family: sans-serif;
+}
+
+ul {
+    display: flex;
+    height: 40px;
+    opacity: 0.8;
+    margin: 0px;
+    justify-content:space-around;
+    align-items: center;
+    background-color: black;
+}
+
+/* .filter-range {
+    margin-top: 100
+} */
+
+li {
+    font-family: fantasy;
+
+}
+
+li a {
+    text-decoration: none;
+    color:white;
+
+}
+.wrapper {
+    display: grid;
+    grid-template-rows: 1.8fr 7fr
+}
+
+.slideup-enter {
+    opacity: 0;
+}
+
+.slideup-enter-active {
+    transition: opacity 0.5s;
+}
+
+.slideup-leave {
+
+}
+
+.slideup-leave-active {
+    opacity: 0;
+    transition: opacity 3s;
+}
+
+.upload-btn-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.btn {
+  border: 2px solid gray;
+  color: gray;
+  background-color: white;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.upload-btn-wrapper input[type=file] {
+  font-size: 100px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100px;
+  height: 10px;
+  border-radius: 5px;
+  background: #000;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 10px;
+  border-radius: 50%;
+  background: #111;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+.upload-state {
+margin-top: 200px;
+margin-left: 420px;
+}
+
+.custom-file-upload {
+
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    background-color: black;
+    color: white;
+    /* margin-left: 350px;
+    margin-top: 230px; */
+    display: inline-block;
+    /* padding: 6px 12px; */
+    font-family: sans-serif;
+    cursor: pointer;
+}
+
+.canvas {
+  align-items: center;
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 150px;
+
+}
+
+.canvas img {
+  max-height: 450px;
+  max-width: auto;
+}
+</style>
+/* img {
+    height: auto;
+    width: auto;
+} */
+/* .uploadfile {
+    display: flexbox !important;
+    margin-left: 550px;
+    margin-top: 250px;
+    opacity: 80%;
+    margin-right: 420px;
+    background-color: gray;
+} */
