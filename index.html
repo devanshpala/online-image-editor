@@ -29,8 +29,18 @@
                         </ul>
                     <label v-if="editState" style="font-family:sans; background:">{{ filterState }}</label>
                     <div v-if="filterState" class="filter-range">
-                        <input type="range" min="0" max="100"
-                        v-model="scale" @change="filterChange" class="slider">{{ scale }}%
+                        <input type="range" min="0" max="100" v-if="rangeType == 1"
+                        v-model="scale"  @change="filterChange" class="slider">
+
+                        <input type="range" min="0" max="350" v-if="rangeType == 3"
+                        v-model="scale"  @change="filterChange" class="slider">
+
+                        <input type="range" min="0" max="100" v-if="rangeType == 4"
+                        v-model="scale"  @change="filterChange" class="slider">
+
+                        <input type="range" min="0"  max="200" v-if="rangeType == 2"
+                        v-model="scale"  @change="filterChange" class="slider">
+                        {{ scale }}%
                     </div>
                 </div>
             </transition>
@@ -38,7 +48,7 @@
              <div class="uploadfile" >
                 <div v-if="!onloadState" class="upload-state" >
                     <div class="upload-btn-wrapper">
-                      <button class="btn">Upload a file</button>
+                      <button class="btn">Upload a Image</button>
                       <input type="file" accept="image/*"  name="file" @change="onChange" />
                     </div>
                 </div>
