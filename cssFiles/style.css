@@ -59,7 +59,7 @@ li a {
 
 .slideup-leave-active {
     opacity: 0;
-    transition: opacity 3s;
+    transition: opacity 0.3s;
 }
 
 .upload-btn-wrapper {
@@ -71,6 +71,7 @@ li a {
 .btn {
   border: 2px solid gray;
   color: gray;
+  margin-left:90px;
   background-color: white;
   padding: 8px 20px;
   border-radius: 8px;
