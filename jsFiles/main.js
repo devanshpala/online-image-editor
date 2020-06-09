@@ -1,19 +1,22 @@
-
 var app = new Vue({
     el: '#app',
     data: {
-        state: true,
+        rangeType: 0,
         main: ['crop', 'rotate', 'filter'],
         edits: ['Filters', 'Crop/Rotate', 'Flip','Resize'],
         editState: null,
         filterState: null,
-        rangeType: 0,
+        appendFilter: '',
+        filter: ['grayscale','blur','opacity','hue-rotate','brightness','invert','contrast','saturate','sepia'],
         onloadState: false,
         file: null,
         addedFilters: [],
         scale: 0,
-        appendFilter: '',
-        filter: ['grayscale','blur','opacity','hue-rotate','brightness','invert','contrast','saturate','sepia'],
+        flpX: true,
+        flpY: true,
+        addedFlips:[],
+        appendFlips: '',
+        flips: ['flipX','flipY'],
         },
     methods: {
 
@@ -23,6 +26,20 @@ var app = new Vue({
             let carcode = this.appendFilter.charAt(indxOf+len+4);
             let obj = {indxOf, len, carcode};
             return obj;
+        },
+
+        tempLoop(value, appendtype) {// THIS LOOP IS USED FOR FILTER/FLIP PORTION
+            let tempstr = '';
+            console.log(value, appendtype)
+            for(let i = value; i < appendtype.length; i++) {
+                tempstr += appendtype[i]
+                // console.log(tempstr )
+                if(appendtype[i] === ')') {
+                    break;
+                }
+                // console.log(tempstr)
+            }
+            return tempstr;
         },
 
         onChange(event) { // THIS METHOD CALLS WHEN IMAGE IS LOADED
@@ -74,7 +91,7 @@ var app = new Vue({
                     }
                 } else {
 
-                    if(this.rangeType == 1) {
+                    if(this.rangeType == 1|| this.rangeType == 4) {
                         this.scale = 0;
 
                     } else {
@@ -95,6 +112,7 @@ var app = new Vue({
             }
 
         },
+
         filterChange() { // THIS METHOD CALLS WHENEVER SCALE OF THE FILTER CHANGES
             let isAdded = false;
             let filt = this.filterState
@@ -125,44 +143,57 @@ var app = new Vue({
                 console.log('addedfilter', this.addedFilters);
 
             } else {
-
-                let lastchar = this.getIndexOfScale(filt);
-                let sstore = ''
-                if(lastchar.carcode == '%' || lastchar.carcode == 'd' || lastchar.carcode == 'p') {
-                        if(filt == 'blur') {
-                            console.log(lastchar.indxOf,lastchar.indxOf+lastchar.len+7)
-                            sstore = this.appendFilter.slice(lastchar.indxOf,
-                                                    lastchar.indxOf+lastchar.len+7);
-                        }
-                        else if(filt == 'hue-rotate') {
-                            sstore = this.appendFilter.slice(lastchar.indxOf,
-                                                    lastchar.indxOf+lastchar.len+8);
-                        } else {
-                            console.log('last else called',lastchar.indxOf,
-                                lastchar.indxOf+lastchar.len+6)
-                            sstore = this.appendFilter.slice(lastchar.indxOf,
-                                lastchar.indxOf+lastchar.len+6);
-                        }
-
-                } else {
-                    if(filt == 'blur') {
-                        sstore = this.appendFilter.slice(lastchar.indxOf,
-                                                lastchar.indxOf+lastchar.len+6);
-                    }
-                    else if(filt == 'hue-rotate') {
-                        sstore = this.appendFilter.slice(lastchar.indxOf,
-                                                lastchar.indxOf+lastchar.len+7);
-                    } else {
-                        sstore = this.appendFilter.slice(lastchar.indxOf,
-                                                lastchar.indxOf+lastchar.len+5);
-                    }
-
-                }
-
-                this.appendFilter = this.appendFilter.replace(sstore,result)
+                let indxOf = this.appendFilter.indexOf(filt);
+                let lastchar = this.tempLoop(indxOf, this.appendFilter);
+                console.log('last char',lastchar);
+                this.appendFilter = this.appendFilter.replace(lastchar,result)
                 document.getElementById('imge').style.filter = this.appendFilter;
             }
             console.log('appendfilter', this.appendFilter);
+        },
+
+        flipChange(val) { // THIS METHOD CALLS WHENEVER FLIP IMAGE ACTION CALLS
+
+            let condVal = 1;
+            let tempval = '';
+            let mainRes = '';
+            let isFlipAdded = false;
+
+            for(let item of this.addedFlips)  {
+                if(item === val) {
+                    isFlipAdded = true;
+                }
+            }
+
+
+            if(val == 'flipX') {
+                this.flpX = !this.flpX;
+                tempval = 'scaleX'
+                mainRes = this.flpX ? 'scaleX(1)' : 'scaleX(-1)';
+                console.log('x called')
+            } else {
+                this.flpY = !this.flpY;
+                mainRes = this.flpY ? 'scaleY(1)' : 'scaleY(-1)';
+                tempval = 'scaleY'
+
+            }
+
+            if(!isFlipAdded) {
+                // console.log('not added yet')
+                this.addedFlips.push(val);
+                this.appendFlips += mainRes;
+            } else {
+                // console.log('already added!')
+                let replaceString = '';
+                let indxOf = this.appendFlips.indexOf(tempval);
+                // console.log(tempval,indxOf,this.appendFlips, '1')
+                replaceString = this.tempLoop(indxOf, this.appendFlips);
+                // console.log(replaceString, mainRes)
+                this.appendFlips = this.appendFlips.replace(replaceString,mainRes)
+            }
+            console.log(mainRes, val)
+            document.getElementById('imge').style.webkitTransform = this.appendFlips;
+             // console.log(this.appendFlips, this.flpX, this.flpY)
         }
     }
 
