@@ -1,9 +1,5 @@
 <style>
 
-/* .main-style {
-    display: grid;
-    grid-auto-rows: 25% 75%
-} */
 
 .nav-style{
     display: flex;
@@ -26,9 +22,6 @@ ul {
     background-color: black;
 }
 
-/* .filter-range {
-    margin-top: 100
-} */
 
 li {
     font-family: fantasy;
@@ -50,7 +43,7 @@ li a {
 }
 
 .slideup-enter-active {
-    transition: opacity 0.5s;
+    transition: opacity 0.3s;
 }
 
 .slideup-leave {
@@ -59,7 +52,7 @@ li a {
 
 .slideup-leave-active {
     opacity: 0;
-    transition: opacity 0.3s;
+    transition: opacity 0.2s;
 }
 
 .upload-btn-wrapper {
@@ -150,15 +143,3 @@ margin-left: 420px;
   max-width: auto;
 }
 </style>
-/* img {
-    height: auto;
-    width: auto;
-} */
-/* .uploadfile {
-    display: flexbox !important;
-    margin-left: 550px;
-    margin-top: 250px;
-    opacity: 80%;
-    margin-right: 420px;
-    background-color: gray;
-} */
