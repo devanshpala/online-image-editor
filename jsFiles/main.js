@@ -3,7 +3,7 @@ var app = new Vue({
     data: {
         rangeType: 0,
         main: ['crop', 'rotate', 'filter'],
-        edits: ['Filters', 'Crop/Rotate', 'Flip','Resize'],
+        edits: ['Filters', 'Rotate', 'Flip','Resize'],
         editState: null,
         filterState: null,
         appendFilter: '',
@@ -12,12 +12,19 @@ var app = new Vue({
         file: null,
         addedFilters: [],
         scale: 0,
+        imgWidth:0,
+        statwidth:0,
+        stathei:0,
+        imgHeight:0,
         flpX: true,
         flpY: true,
         addedFlips:[],
         appendFlips: '',
         flips: ['flipX','flipY'],
+        rotates:['left','right'],
+        rotateDegree:1,
         },
+
     methods: {
 
         getIndexOfScale(value) { // THIS METHOD CALLS TO FETCH THE PERCENTAGE
@@ -26,6 +33,54 @@ var app = new Vue({
             let carcode = this.appendFilter.charAt(indxOf+len+4);
             let obj = {indxOf, len, carcode};
             return obj;
+        },
+
+        updatewidth() { // THIS METHOD GETS CALLED WHILE RESIZIG IMAGE'S WIDTH
+            if(this.imgWidth < this.statwidth) {
+                document.getElementById('imge').width  = this.imgWidth;
+                console.log(this.statwidth, this.imgWidth)
+                console.log(document.getElementById('imge').width)
+                // console.log('if condition',this.statwidth)
+            } else {
+                console.log('else condition',this.statwidth)
+                document.getElementById('imge').width = this.statwidth;
+            }
+        },
+
+        updateheight() { // THIS METHOD GETS CALLED WHILE RESIZIG IMAGE'S HEIGHT
+
+            console.log('update height')
+            if(this.imgHeight < this.stathei) {
+                document.getElementById('imge').height  = this.imgHeight;
+                console.log('if condition',this.stathei)
+            } else {
+                // console.log(this.im'else condition',this.stathei)
+                document.getElementById('imge').height = this.stathei;
+            }
+
+        },
+
+        scaleImage() { // THIS METHOD IS CALLED WHEN IMAGE IS LOADED
+                console.log('scale image called')
+                this.imgWidth = document.getElementById('imge').width;
+                this.imgHeight = document.getElementById('imge').height;
+                if(this.imgHeight > 450) {
+                    this.aspectratio(this.imgHeight, this.imgWidth)
+                } else {
+                    document.getElementById('imge').height = this.imgHeight
+                    this.stathei = document.getElementById('imge').height;
+                    this.statwidth = document.getElementById('imge').width;
+                }
+                console.log(document.getElementById('imge').height)
+                console.log(document.getElementById('imge').width)
+        },
+
+        aspectratio (height, width) { // THIS METHOD IS USED TO SET ASPECT RATIO OF IMAGE WHILE RESIZING
+            let ratio = width / height;
+            document.getElementById('imge').width = ratio * 450;
+            document.getElementById('imge').height = 450;
+            this.stathei = document.getElementById('imge').height;
+            this.statwidth = document.getElementById('imge').width;
         },
 
         tempLoop(value, appendtype) {// THIS LOOP IS USED FOR FILTER/FLIP PORTION
@@ -53,6 +108,10 @@ var app = new Vue({
         },
 
         changeFilterState(val) { // THIS METHOD CALLS WHENEVER ANY FILTER IS CHANGED
+
+            console.log('scale called')
+            this.imgWidth = document.getElementById('imge').width;
+            this.imgHeight = document.getElementById('imge').height;
 
             this.filterState = val;
             let tmp = this.filterState
@@ -194,7 +253,39 @@ var app = new Vue({
             console.log(mainRes, val)
             document.getElementById('imge').style.webkitTransform = this.appendFlips;
              // console.log(this.appendFlips, this.flpX, this.flpY)
+        },
+
+        rotateChange(val,direction) {
+            let value = 0;
+            let degree = 0;
+            if(direction == 'right' && val == 1) {
+                value = 4;
+            } else if(direction == 'right') {
+                value = val - 1;
+            }
+
+            if(direction == 'left' && val == 4) {
+                value = 1;
+            } else if(direction == 'left') {
+                value = val + 1;
+            }
+
+            if(value == 1) {
+                degree = 0;
+            } else if(value == 2){
+                degree = 90;
+            } else if(value == 3){
+                degree = 180;
+            } else {
+                degree = 270;
+            }
+
+            this.rotateDegree = value;
+            console.log(this.rotateDegree)
+            document.getElementById('imge').style.webkitTransform = 'rotate('+degree+'deg)'
+
         }
+
     }
 
 });
