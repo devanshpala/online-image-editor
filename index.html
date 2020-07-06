@@ -19,8 +19,8 @@
                     </ul>
                 </div>
                 <!-- end of main nav-bar -->
-                <!-- begin of filter nav-bar -->
                 <transition name="slideup" mode="out-in">
+                    <!-- begin of filter nav-bar -->
                     <div class="nav-sub-style" key="filter" v-if="editState == 'Filters'">
                             <ul >
                                 <li v-for="(edit,index) of filter">
@@ -37,7 +37,7 @@
                             <input type="range" min="0" max="350" v-if="rangeType == 3"
                             v-model="scale"  @change="filterChange" class="slider">
 
-                            <input type="range" min="0" max="100" v-if="rangeType == 4"
+                            <input type="range" min="0" max="10" v-if="rangeType == 4"
                             v-model="scale"  @change="filterChange" class="slider">
 
                             <input type="range" min="0"  max="200" v-if="rangeType == 2"
@@ -56,13 +56,43 @@
                             </li>
                         </ul>
                     </div>
+                    <!-- end of flip nav-bar -->
+                    <!-- begin of rotate nav-bar -->
+                    <div class="nav-style" key="rotate" v-if="editState == 'Rotate'" >
+                        <ul>
+                            <li v-for="(rotate,index) of rotates">
+                                <a href="#" @click.prevent="rotateChange(rotateDegree,rotate)">
+                                  {{ rotate }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="nav-style" key="resize" v-if="editState == 'Resize'" >
+                        <ul style="color: white">
+                            <li> <a>Image's Height :</a>
+                                <input type="number" @change="updateheight" v-model='imgHeight'>
+                            </li>
+                            <li> Image's Width :
+                                <input type="number"  @change="updatewidth" v-model='imgWidth'>
+                             </li>
+                             <!-- <button>Resize</button> -->
+                        </ul>
+                    </div>
+                    <!-- end of rotate nav-bar -->
                 </transition>
-                <!-- end of flip nav-bar -->
             </div>
                     <!-- end of main navbarss class -->
                     <!-- <input type="file" > -->
                 <div class="canvas" class="main-class" v-if="onloadState">
-                    <img :src="file" id="imge"  alt="">
+                    <div class="" v-once  v-if="editState == 'Resize'" style="font-family: sans">
+                    <p> <b> Note </b> : Image's
+                        <br>
+                      Original Height is : {{ imgHeight }} px
+                      Original Width is : {{ imgWidth }} px</p>
+                    </div>
+                    <div class="">
+                        <img :src="file" id="imge" @load="scaleImage" alt="">
+                    </div>
                 </div>
                     <!-- upload file content -->
                 <div v-if="!onloadState" class="upload-state" >
