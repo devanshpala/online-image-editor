@@ -84,11 +84,18 @@
                     <!-- end of main navbarss class -->
                     <!-- <input type="file" > -->
                 <div class="canvas" class="main-class" v-if="onloadState">
-                    <div class="" v-once  v-if="editState == 'Resize'" style="font-family: sans">
-                    <p> <b> Note </b> : Image's
+                    <div v-if="editState == 'Resize'" style="font-family: sans; font-size: 12px; color: gray">
+                    <p>
+                        <b> Note </b> : <i>Image's
                         <br>
-                      Original Height is : {{ imgHeight }} px
-                      Original Width is : {{ imgWidth }} px</p>
+                          Original Height is : <b>{{ imgHeight }}px</b>
+                          Original Width is : <b>{{ imgWidth }}px</b>,
+                        <br>
+                        <hr>
+                        Current Height is : <b>{{ stathei }}px</b>
+                        Current Width is : <b>{{ statwidth }}px</b>
+                        </i>
+                    </p>
                     </div>
                     <div class="">
                         <img :src="file" id="imge" @load="scaleImage" alt="">
