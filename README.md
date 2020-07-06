@@ -3,4 +3,4 @@ This is an image editor web-project, front-end side Vue.Js is used and back-end 
 You can directly access to this project, no need install node.js for now.
 
 # Progress 
-Till now Image filters and flips-Image are working.
+Till now Image filters || flips-Image || Rotate-image || Resize-image are Active.
