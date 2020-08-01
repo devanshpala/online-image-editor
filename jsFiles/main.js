@@ -3,7 +3,7 @@ var app = new Vue({
     data: {
         rangeType: 0,
         main: ['crop', 'rotate', 'filter'],
-        edits: ['Filters', 'Rotate', 'Flip','Resize'],
+        edits: ['Filters', 'Rotate','Flip','Resize','compress', 'image conversion','download image'],
         editState: null,
         filterState: null,
         appendFilter: '',
@@ -19,13 +19,175 @@ var app = new Vue({
         flpX: true,
         flpY: true,
         addedFlips:[],
+        basicHeight:0,
+        basicWidth:0,
+        ftype: '',
         appendFlips: '',
+        xflip:1,
+        yflip:1,
         flips: ['flipX','flipY'],
-        rotates:['left','right'],
-        rotateDegree:1,
+        rotationDegree:0,
+        tempfile: null,
         },
 
     methods: {
+
+        // addborderRadius() {
+        //     console.log('border radius called')
+        //     document.getElementById('imge').style.borderRadius = this.scale+"px"
+        // },
+
+        downloadImage() { // THIS FUNCTION CONVERTS IMAGE TO CANVAS TO SAVE ALL THE EFFECTS AND EDITS
+
+
+            console.log('download image is called')
+            const imagee = document.getElementById('imge')
+            const img = new Image();
+            img.src = this.file
+
+
+            const elem1 = document.createElement('canvas');
+            const width = img.width
+            // const scaleFactor = width / img.width;
+
+            elem1.width = this.imgWidth
+            elem1.height = this.imgHeight
+
+            const ctx1 = elem1.getContext('2d');
+            ctx1.filter = this.appendFilter
+            // ctx1.roundRect = ()
+
+
+            // this part is for flipping image
+            ctx1.translate(0 + width/2, 0 + width/2);
+            ctx1.scale(this.xflip, this.yflip)
+            console.log(this.xflip, this.yflip)
+            ctx1.translate(-(0 + width/2), -(0 + width/2));
+            // end of the flipping image
+            ctx1.drawImage(img, 0, 0, width, img.height);
+            const dataURI = elem1.toDataURL(this.ftype)
+            // this.file = dataURI
+            ctx1.clearRect(0, 0, width, img.height)
+
+
+
+            //  ROTATION PART
+            img.src = this.file
+            ctx1.height = this.imgHeight
+            ctx1.width = this.imgWidth
+
+            ctx1.translate(img.width/2,img.height/2)
+            ctx1.rotate(this.rotationDegree * Math.PI / 180)
+            ctx1.drawImage(img, -(img.width/2), -(img.height/2), this.imgWidth, this.imgHeight)
+
+            let filetype = this.ftype == 'image/jpeg' ? 'jpeg' : 'png'
+
+            ctx1.canvas.toBlob((blob) => {
+                var fil = new File([blob], 'dev-image-editor-'+new Date().valueOf()+'.'+filetype, {
+                    type: this.ftype,
+                    lastModified: Date.now(),
+                });
+                    var imageUrl = URL.createObjectURL(fil);
+                    console.log(imageUrl)
+                    this.tempfile = imageUrl
+                    // document.getElementById('downloadit').click()
+            }, this.ftype, 1);
+
+            this.tempFunction();
+        },
+
+        tempFunction() {
+            console.log('temp called')
+            setTimeout(()=> {
+                document.getElementById('downloadit').click()
+            },1000)
+        },
+        compressImage() { // THIS FUNCTION COMPRESSES IMAGE AND REDUCES PIXELS
+              const img = new Image();
+              img.src = this.file
+              console.log(img.src)
+
+                          const elem = document.createElement('canvas');
+                          const width = 600
+                          const scaleFactor = width / img.width;
+
+                          elem.width = width;
+                          elem.height = img.height * scaleFactor;
+
+                          const ctx = elem.getContext('2d');
+                          ctx.drawImage(img, 0, 0, width, img.height * scaleFactor);
+
+                          ctx.canvas.toBlob((blob) => {
+                              var fil = new File([blob], 'random', {
+                                  type: this.ftype,
+                                  lastModified: Date.now(),
+                              });
+                                  var imageUrl = URL.createObjectURL(fil);
+                                  console.log(imageUrl)
+                                  this.file = imageUrl
+                          }, this.ftype, 0.5);
+
+
+       },
+
+        convertImageType() { // THIS FUNCTION CONVERTS JPG TO PNG AND PNG TO JPG VISE-VERSA
+
+           const img = new Image();
+           img.src = this.file
+
+
+           const elem = document.createElement('canvas');
+           const width = img.width
+           // const scaleFactor = width / img.width;
+
+           elem.width = width
+           elem.height = img.height
+
+           const ctx = elem.getContext('2d');
+           ctx.drawImage(img, 0, 0, width, img.height);
+
+
+           console.log(img.width, img.height)
+           // ctx.drawImage(img,0,0);
+           ctx.canvas.toBlob((blob)=> {
+               if(this.ftype == 'image/jpeg') {
+                   const dataURI = elem.toDataURL()
+                   this.ftype = 'image/png'
+                   this.file = dataURI
+               } else {
+                   const dataURI = elem.toDataURL('image/jpeg')
+                   this.ftype = 'image/jpeg'
+                   this.file = dataURI
+               }
+               // console.log('blob action called')
+           })
+           // this.file = dataURI;
+
+           //
+           // if(this.ftype == 'image/jpeg') {
+           //      console.log('jpeg called')
+           // } else {
+           //     console.log('jpeg called')
+           //     const dataURI = elem.toDataURL('image/jpeg')
+           //     this.file = dataURI;
+           // }
+       },
+
+        onChange(event) { // THIS METHOD CALLS WHEN IMAGE IS LOADED
+            let src = URL.createObjectURL(event.target.files[0]);
+            this.file = src;
+            this.ftype = event.target.files[0].type
+            this.onloadState = true;
+
+
+
+
+
+
+
+
+            // this.compressImage(event)
+        },
 
         getIndexOfScale(value) { // THIS METHOD CALLS TO FETCH THE PERCENTAGE
             let indxOf = this.appendFilter.indexOf(value);
@@ -61,9 +223,11 @@ var app = new Vue({
         },
 
         scaleImage() { // THIS METHOD IS CALLED WHEN IMAGE IS LOADED
-                console.log('scale image called')
+                // console.log('scale image called')
                 this.imgWidth = document.getElementById('imge').width;
                 this.imgHeight = document.getElementById('imge').height;
+                this.basicWidth = this.imgWidth
+                this.basicHeight = this.imgHeight
                 if(this.imgHeight > 450) {
                     this.aspectratio(this.imgHeight, this.imgWidth)
                 } else {
@@ -71,9 +235,15 @@ var app = new Vue({
                     this.stathei = document.getElementById('imge').height;
                     this.statwidth = document.getElementById('imge').width;
                 }
-                console.log(document.getElementById('imge').height)
-                console.log(document.getElementById('imge').width)
-        },
+                // console.log(document.getElementById('imge').height)
+                // console.log(document.getElementById('imge').width)
+
+
+
+
+
+
+    },
 
         aspectratio (height, width) { // THIS METHOD IS USED TO SET ASPECT RATIO OF IMAGE WHILE RESIZING
             let ratio = width / height;
@@ -97,14 +267,15 @@ var app = new Vue({
             return tempstr;
         },
 
-        onChange(event) { // THIS METHOD CALLS WHEN IMAGE IS LOADED
-            let src = URL.createObjectURL(event.target.files[0]);
-            this.file = src;
-            this.onloadState = true;
-        },
-
-        changeEditState(val) { // THIS METHOD CALLS WHENEVER
+        changeEditState(val) { // THIS METHOD CALLS WHENEVER MAIN EDIT STATE CHANGES
             this.editState = val;
+            if(val === 'compress') {
+                this.compressImage()
+            } else if(val === 'image conversion') {
+                this.convertImageType()
+            } else if(val === 'download image') {
+                this.downloadImage()
+            }
         },
 
         changeFilterState(val) { // THIS METHOD CALLS WHENEVER ANY FILTER IS CHANGED
@@ -207,6 +378,7 @@ var app = new Vue({
                 console.log('last char',lastchar);
                 this.appendFilter = this.appendFilter.replace(lastchar,result)
                 document.getElementById('imge').style.filter = this.appendFilter;
+
             }
             console.log('appendfilter', this.appendFilter);
         },
@@ -236,7 +408,9 @@ var app = new Vue({
                 tempval = 'scaleY'
 
             }
-
+            this.xflip = this.flpX ? 1 : -1;
+            this.yflip = this.flpY ? 1 : -1;
+            // console.log(this.flpY)
             if(!isFlipAdded) {
                 // console.log('not added yet')
                 this.addedFlips.push(val);
@@ -250,40 +424,54 @@ var app = new Vue({
                 // console.log(replaceString, mainRes)
                 this.appendFlips = this.appendFlips.replace(replaceString,mainRes)
             }
-            console.log(mainRes, val)
+            // console.log(mainRes, val)
             document.getElementById('imge').style.webkitTransform = this.appendFlips;
              // console.log(this.appendFlips, this.flpX, this.flpY)
+
+
+
         },
 
-        rotateChange(val,direction) {
-            let value = 0;
-            let degree = 0;
-            if(direction == 'right' && val == 1) {
-                value = 4;
-            } else if(direction == 'right') {
-                value = val - 1;
-            }
-
-            if(direction == 'left' && val == 4) {
-                value = 1;
-            } else if(direction == 'left') {
-                value = val + 1;
-            }
-
-            if(value == 1) {
-                degree = 0;
-            } else if(value == 2){
-                degree = 90;
-            } else if(value == 3){
-                degree = 180;
+        rotateChange(val) {
+            if(val == 'right') {
+                if(this.rotationDegree != 0) {
+                    this.rotationDegree -= 90
+                } else {
+                    this.rotationDegree = 270
+                }
             } else {
-                degree = 270;
+                if(this.rotationDegree == 360) {
+                    this.rotationDegree = 90
+                } else {
+                    this.rotationDegree += 90
+                    // console.log('tesr')
+                }
             }
+            console.log(val)
+            console.log(this.rotationDegree)
+            document.getElementById('imge').style.webkitTransform = 'rotate('+this.rotationDegree+'deg)'
 
-            this.rotateDegree = value;
-            console.log(this.rotateDegree)
-            document.getElementById('imge').style.webkitTransform = 'rotate('+degree+'deg)'
 
+
+            // const img = new Image();
+            // img.src = this.file
+            //
+            // const elem1 = document.createElement('canvas');
+            // const width = img.width
+            // // const scaleFactor = width / img.width;
+            //
+            // elem1.width = width
+            // elem1.height = img.height
+            //
+            // const ctx1 = elem1.getContext('2d');
+            //
+            // ctx1.translate(img.width/2,img.height/2)
+            // ctx1.rotate(this.rotationDegree * Math.PI / 180)
+            // //
+            // ctx1.drawImage(img, -(img.width/2), -(img.height/2))
+            // const dataURI2 = elem1.toDataURL(this.ftype)
+            // // console.log(dataURI2)
+            // this.file = dataURI2
         }
 
     }
