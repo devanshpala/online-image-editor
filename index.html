@@ -16,6 +16,9 @@
                               {{ edit }}
                             </a>
                         </li>
+                        <li>
+                            <a  id="downloadit" :href="tempfile" download></a>
+                        </li>
                     </ul>
                 </div>
                 <!-- end of main nav-bar -->
@@ -60,13 +63,16 @@
                     <!-- begin of rotate nav-bar -->
                     <div class="nav-style" key="rotate" v-if="editState == 'Rotate'" >
                         <ul>
-                            <li v-for="(rotate,index) of rotates">
-                                <a href="#" @click.prevent="rotateChange(rotateDegree,rotate)">
-                                  {{ rotate }}
-                                </a>
+                            <li>
+                                <img height="30px" style="transform:scaleX(-1)" @click="rotateChange('right')" src="left-rotate.png">
+                            </li>
+                            <li>
+                                <img height="30px" src="left-rotate.png" @click="rotateChange('left')">
                             </li>
                         </ul>
                     </div>
+                    <!-- end of rotate nav-bar -->
+                    <!-- begin of resize bar -->
                     <div class="nav-style" key="resize" v-if="editState == 'Resize'" >
                         <ul style="color: white">
                             <li> <a>Image's Height :</a>
@@ -78,22 +84,22 @@
                              <!-- <button>Resize</button> -->
                         </ul>
                     </div>
-                    <!-- end of rotate nav-bar -->
+                    <!-- end of resize nav-bar -->
                 </transition>
             </div>
                     <!-- end of main navbarss class -->
                     <!-- <input type="file" > -->
-                <div class="canvas" class="main-class" v-if="onloadState">
+                <div class="canvas"  v-if="onloadState">
                     <div v-if="editState == 'Resize'" style="font-family: sans; font-size: 12px; color: gray">
                     <p>
                         <b> Note </b> : <i>Image's
                         <br>
-                          Original Height is : <b>{{ imgHeight }}px</b>
-                          Original Width is : <b>{{ imgWidth }}px</b>,
+                          Original Height is : <b>{{ basicHeight }}px</b>
+                          Original Width is : <b>{{ basicWidth }}px</b>,
                         <br>
                         <hr>
-                        Current Height is : <b>{{ stathei }}px</b>
-                        Current Width is : <b>{{ statwidth }}px</b>
+                        Current Height is : <b>{{ imgHeight }}px</b>
+                        Current Width is : <b>{{ imgWidth }}px</b>
                         </i>
                     </p>
                     </div>
