@@ -4,12 +4,16 @@
 .nav-style{
     display: flex;
     justify-content: center;
-    background-color: black;
+    background-color: gray;
     align-items: center;
 }
 
 .nav-sub-style{
     font-family: sans-serif;
+}
+.nav-sub-style-2{
+    font-family: sans-serif;
+    background-color: gray;
 }
 
 ul {
@@ -25,13 +29,11 @@ ul {
 
 li {
     font-family: fantasy;
-
 }
 
 li a {
     text-decoration: none;
     color:white;
-
 }
 .wrapper {
     display: grid;
@@ -124,17 +126,7 @@ li a {
   background: #4CAF50;
   cursor: pointer;
 }
-/* .canvas {
-  align-items: center;
-  display: flex;
-  height: 100%;
-  justify-content: center;
 
-  & > img {
-    max-height: 100%;
-    max-width: 100%;
-  }
-} */
 .upload-state {
 margin-top: 240px;
 margin-bottom: -200px;
@@ -153,6 +145,6 @@ margin-left: 460px;
 }
 
 .canvas img {
-
+    background-color: black;
 }
 </style>
