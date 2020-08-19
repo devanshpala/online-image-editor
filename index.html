@@ -45,7 +45,7 @@
 
                             <input type="range" min="0"  max="200" v-if="rangeType == 2"
                             v-model="scale"  @change="filterChange" class="slider">
-                            {{ scale }}%
+                            {{ scale }} %
                         </div>
                     </div>
                 <!-- end of filter nav-bar -->
@@ -89,7 +89,7 @@
             </div>
                     <!-- end of main navbarss class -->
                     <!-- <input type="file" > -->
-                <div class="canvas"  v-if="onloadState">
+                <div class="canvas" >
                     <div v-if="editState == 'Resize'" style="font-family: sans; font-size: 12px; color: gray">
                     <p>
                         <b> Note </b> : <i>Image's
