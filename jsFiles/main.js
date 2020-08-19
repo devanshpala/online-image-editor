@@ -28,6 +28,7 @@ var app = new Vue({
         flips: ['flipX','flipY'],
         rotationDegree:0,
         tempfile: null,
+        isrotated: false,
         },
 
     methods: {
@@ -40,7 +41,7 @@ var app = new Vue({
         downloadImage() { // THIS FUNCTION CONVERTS IMAGE TO CANVAS TO SAVE ALL THE EFFECTS AND EDITS
 
 
-            console.log('download image is called')
+            // console.log('download image is called')
             const imagee = document.getElementById('imge')
             const img = new Image();
             img.src = this.file
@@ -48,37 +49,35 @@ var app = new Vue({
 
             const elem1 = document.createElement('canvas');
             const width = img.width
-            // const scaleFactor = width / img.width;
 
             elem1.width = this.imgWidth
             elem1.height = this.imgHeight
 
             const ctx1 = elem1.getContext('2d');
-            ctx1.filter = this.appendFilter
-            // ctx1.roundRect = ()
 
+            ctx1.filter = this.appendFilter
 
             // this part is for flipping image
             ctx1.translate(0 + width/2, 0 + width/2);
             ctx1.scale(this.xflip, this.yflip)
-            console.log(this.xflip, this.yflip)
-            ctx1.translate(-(0 + width/2), -(0 + width/2));
+
             // end of the flipping image
+            ctx1.translate(-(0 + width/2), -(0 + width/2));
             ctx1.drawImage(img, 0, 0, width, img.height);
-            const dataURI = elem1.toDataURL(this.ftype)
-            // this.file = dataURI
-            ctx1.clearRect(0, 0, width, img.height)
+            // const dataURI = elem1.toDataURL(this.ftype)
+            // this.tempfile = dataURI
+            // ctx1.clearRect(0, 0, this.imgWidth, this.imgHeight)
 
 
-
-            //  ROTATION PART
-            img.src = this.file
-            ctx1.height = this.imgHeight
-            ctx1.width = this.imgWidth
-
-            ctx1.translate(img.width/2,img.height/2)
-            ctx1.rotate(this.rotationDegree * Math.PI / 180)
-            ctx1.drawImage(img, -(img.width/2), -(img.height/2), this.imgWidth, this.imgHeight)
+            // repeating 2nd time because flipping image and rotating image was conflicting
+            // ROTATION PART
+            // img.src = this.tempfile
+            // ctx1.height = this.imgHeight
+            // ctx1.width = this.imgWidth
+            //
+            // ctx1.translate(img.width/2,img.height/2)
+            // ctx1.rotate(this.rotationDegree * Math.PI / 180)
+            // ctx1.drawImage(img, -(img.width/2), -(img.height/2), this.imgWidth, this.imgHeight)
 
             let filetype = this.ftype == 'image/jpeg' ? 'jpeg' : 'png'
 
@@ -93,15 +92,16 @@ var app = new Vue({
                     // document.getElementById('downloadit').click()
             }, this.ftype, 1);
 
-            this.tempFunction();
-        },
-
-        tempFunction() {
-            console.log('temp called')
+            // this.tempFunction();
             setTimeout(()=> {
-                document.getElementById('downloadit').click()
+                document.getElementById('downloadit').click(),
+                this.appendFilter = "",
+                this.appendFlips = "",
+                this.rotationDegree = 0
+                // this.file = this.tempfile
             },1000)
         },
+
         compressImage() { // THIS FUNCTION COMPRESSES IMAGE AND REDUCES PIXELS
               const img = new Image();
               img.src = this.file
@@ -178,14 +178,6 @@ var app = new Vue({
             this.file = src;
             this.ftype = event.target.files[0].type
             this.onloadState = true;
-
-
-
-
-
-
-
-
             // this.compressImage(event)
         },
 
@@ -228,7 +220,7 @@ var app = new Vue({
                 this.imgHeight = document.getElementById('imge').height;
                 this.basicWidth = this.imgWidth
                 this.basicHeight = this.imgHeight
-                if(this.imgHeight > 450) {
+                if(this.imgHeight > 400) {
                     this.aspectratio(this.imgHeight, this.imgWidth)
                 } else {
                     document.getElementById('imge').height = this.imgHeight
@@ -247,8 +239,8 @@ var app = new Vue({
 
         aspectratio (height, width) { // THIS METHOD IS USED TO SET ASPECT RATIO OF IMAGE WHILE RESIZING
             let ratio = width / height;
-            document.getElementById('imge').width = ratio * 450;
-            document.getElementById('imge').height = 450;
+            document.getElementById('imge').width = ratio * 400;
+            document.getElementById('imge').height = 400;
             this.stathei = document.getElementById('imge').height;
             this.statwidth = document.getElementById('imge').width;
         },
@@ -435,7 +427,7 @@ var app = new Vue({
         rotateChange(val) {
             if(val == 'right') {
                 if(this.rotationDegree != 0) {
-                    this.rotationDegree -= 90
+                    this.rotationDegree = -90
                 } else {
                     this.rotationDegree = 270
                 }
@@ -443,35 +435,69 @@ var app = new Vue({
                 if(this.rotationDegree == 360) {
                     this.rotationDegree = 90
                 } else {
-                    this.rotationDegree += 90
+                    this.rotationDegree = 90
                     // console.log('tesr')
                 }
             }
-            console.log(val)
-            console.log(this.rotationDegree)
-            document.getElementById('imge').style.webkitTransform = 'rotate('+this.rotationDegree+'deg)'
+            console.log()
+            console.log(val,this.rotationDegree)
+            // document.getElementById('imge').style.webkitTransform = 'rotate('+this.rotationDegree+'deg)'
 
 
 
-            // const img = new Image();
-            // img.src = this.file
-            //
-            // const elem1 = document.createElement('canvas');
-            // const width = img.width
-            // // const scaleFactor = width / img.width;
-            //
-            // elem1.width = width
-            // elem1.height = img.height
-            //
-            // const ctx1 = elem1.getContext('2d');
-            //
-            // ctx1.translate(img.width/2,img.height/2)
-            // ctx1.rotate(this.rotationDegree * Math.PI / 180)
-            // //
-            // ctx1.drawImage(img, -(img.width/2), -(img.height/2))
-            // const dataURI2 = elem1.toDataURL(this.ftype)
-            // // console.log(dataURI2)
-            // this.file = dataURI2
+            const img = new Image();
+            img.src = this.file
+
+            const canElem = document.createElement('canvas');
+            canElem.width = this.imgWidth
+            canElem.height = this.imgHeight
+            console.log(canElem.width, canElem.height)
+            const ctxCan = canElem.getContext('2d');
+
+            img.onload = () => {
+
+
+                ctxCan.height = this.imgHeight
+                ctxCan.width = this.imgWidth
+                // if(this.imgHeight < this.imgWidth) {
+                //         if(!this.isrotated) {
+                //
+                //             ctxCan.width = this.imgHeight
+                //             ctxCan.height = this.imgWidth
+                //
+                //             console.log('false console called')
+                //             ctxCan.translate(img.height/2,img.width/2)
+                //             ctxCan.rotate(this.rotationDegree * Math.PI / 180)
+                //             ctxCan.drawImage(img,-(img.height/2), -(img.width/2) , img.height, img.width)
+                //             ctxCan.translate(-(img.width/2),-(img.height/2))
+                //             this.isrotated = !this.isrotated
+                //         } else {
+                //
+                //             ctxCan.translate(img.width/2,img.height/2)
+                //             ctxCan.rotate(this.rotationDegree * Math.PI / 180)
+                //             ctxCan.drawImage(img, -(img.width/2), -(img.height/2), img.width, img.height)
+                //             ctxCan.translate(-(img.width/2),-(img.height/2))
+                //
+                //             console.log('true console called')
+                //             this.isrotated = !this.isrotated
+                //         }
+                //
+                // } else {
+
+                    ctxCan.translate(img.width/2,img.height/2)
+                    ctxCan.rotate(this.rotationDegree * Math.PI / 180)
+                    ctxCan.drawImage(img, -(img.width/2), -(img.height/2), img.width, img.height)
+                    ctxCan.translate(-(img.width/2),-(img.height/2))
+                // }
+                const datauri  = canElem.toDataURL(this.ftype)
+                setTimeout(()=> {
+                    this.file = datauri
+                    const hei = document.getElementById('imge').height
+                    const wid = document.getElementById('imge').width
+                    console.log(this.rotationDegree, canElem.height, canElem.width)
+
+                },1000)
+            }
         }
 
     }
